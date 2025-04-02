@@ -1,12 +1,17 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { LobbyComponent } from './lobby/lobby.component';
+import { PokerTableComponent } from './poker-table/poker-table.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [
+    LobbyComponent,
+    PokerTableComponent
+  ],
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'planning-poker-app';
+  roomKey: string | null = null;
 }

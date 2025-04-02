@@ -1,0 +1,40 @@
+<div class="lobby-container container mt-5">
+    <form class="p-4 border rounded shadow-sm bg-light">
+        <div class="form-group mb-3">
+            <label
+                for="username"
+                class="form-label"
+            >User Name:</label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-control"
+                placeholder="Enter your name"
+                [(ngModel)]="userName"
+                required
+            />
+        </div>
+        <div class="form-group mb-3">
+            <label
+                for="roomKey"
+                class="form-label"
+            >Room Key:</label>
+            <input
+                type="text"
+                id="roomKey"
+                name="roomKey"
+                class="form-control"
+                placeholder="Enter room key (optional)"
+                [(ngModel)]="roomKey"
+            />
+        </div>
+        <button
+            type="button"
+            class="btn btn-primary w-100"
+            (click)="onSubmit()"
+        >
+            {{ roomKey.trim() ? 'Join Room' : 'Create Room' }}
+        </button>
+    </form>
+</div>
