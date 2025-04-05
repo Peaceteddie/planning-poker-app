@@ -1,17 +1,20 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-lobby',
-  imports: [FormsModule],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './lobby.component.html',
   styleUrl: './lobby.component.css'
 })
 export class LobbyComponent {
-  roomKey: string = '';
-  userName: string = '';
+  @Output() UserName = new EventEmitter<string>();
+
+  userName = new FormControl<string>('', { nonNullable: true, validators: Validators.required });
 
   onSubmit() {
-    // Handle room creation or joining logic here
+    if (this.userName.valid) {
+      this.UserName.emit(this.userName.value);
+    }
   }
 }

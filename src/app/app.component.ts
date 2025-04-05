@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { LobbyComponent } from './lobby/lobby.component';
 import { PokerTableComponent } from './poker-table/poker-table.component';
@@ -5,6 +6,7 @@ import { PokerTableComponent } from './poker-table/poker-table.component';
 @Component({
   selector: 'app-root',
   imports: [
+    CommonModule,
     LobbyComponent,
     PokerTableComponent
   ],
@@ -13,5 +15,9 @@ import { PokerTableComponent } from './poker-table/poker-table.component';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  roomKey: string | null = null;
+  userName: string = '';
+
+  setUserName(userName: string) {
+    this.userName = userName;
+  }
 }

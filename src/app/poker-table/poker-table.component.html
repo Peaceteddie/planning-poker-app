@@ -1,1 +1,14 @@
-<p>poker-table works!</p>
+<div class="poker-table text-center mt-4 consistent-bg">
+    <h1 class="mb-4">Planning Poker Table</h1>
+    <div class="row justify-content-center">
+        <button *ngFor="let number of fibonacciSequence; let i = index"
+            class="card m-2 text-center card-size border-primary consistent-bg"
+            style="width: 5rem; height: 7rem; border-width: 2px; border-radius: 10px;"
+            [style.background-color]="`oklch(.9 .4 ${lightnessValues[i]} / .75)`" (click)="castVote(number)">
+            <div class="card-body d-flex align-items-center justify-content-center p-0 consistent-bg"
+                style="font-size: 1.5rem; font-weight: bold;">
+                {{ number }}
+            </div>
+        </button>
+    </div>
+</div>
