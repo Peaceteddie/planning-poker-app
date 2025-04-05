@@ -1,14 +1,16 @@
 {
   "name": "planning-poker-app",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "start:server": "node server.js",
-    "start:all": "concurrently \"npm run start\" \"npm run start:server\"",
+    "build:server": "tsc --project tsconfig.server.json",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "ng": "ng",
+    "start:all": "npm run build:server && concurrently \"npm run start\" \"npm run start:server\"",
+    "start:server": "node dist/server.js",
+    "start": "ng serve",
+    "test": "ng test",
+    "watch": "ng build --watch --configuration development"
   },
   "private": true,
   "dependencies": {
