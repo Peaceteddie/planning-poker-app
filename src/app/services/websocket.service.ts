@@ -67,6 +67,7 @@ export class WebSocketService implements OnDestroy {
   addUser = (user: User) => this.sendMessage({ type: 'addUser', user });
   castVote = (user: User) => this.sendMessage({ type: 'castVote', user });
   removeUser = (user: User) => this.sendMessage({ type: 'removeUser', user });
+  resetVotes = (users: User[]) => this.sendMessage({ type: 'resetVotes', users });
 
   getMessages = (): Observable<any> => this.socket$.asObservable();
   sendMessage = (message: any) => this.socket$?.next(message);

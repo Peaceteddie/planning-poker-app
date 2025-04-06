@@ -36,6 +36,10 @@ function handleMessage(ws: WebSocket, message: string) {
       handleRemoveUser(ws);
       break;
 
+    case 'resetVotes':
+      handleResetVotes(msg.users!);
+      break;
+
     default:
       console.warn(`Unhandled message type: ${msg.type}`);
   }
@@ -55,6 +59,10 @@ function handleCastVote(user: User) {
 function handleRemoveUser(ws: WebSocket) {
   clients.delete(ws);
   broadcastMessage({ type: 'updateUsers', users: Array.from(clients.values()) });
+}
+
+function handleResetVotes(users: User[]) {
+  broadcastMessage({ type: 'updateUsers', users });
 }
 
 function broadcastMessage(message: Message) {

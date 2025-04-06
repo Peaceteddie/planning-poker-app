@@ -15,7 +15,7 @@ import { PokerTableComponent } from './poker-table/poker-table.component';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  userName: string = '';
+  userName!: string;
 
   setUserName(userName: string) {
     this.userName = userName;

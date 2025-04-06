@@ -1,2 +1,2 @@
-<app-lobby *ngIf="!userName.trim()" (UserName)="setUserName($event)"></app-lobby>
-<app-poker-table *ngIf="userName.trim()" [userName]="userName"></app-poker-table>
+<app-lobby *ngIf="!userName?.trim()" (UserName)="setUserName($event)"></app-lobby>
+<app-poker-table *ngIf="userName?.trim()" [userName]="userName"></app-poker-table>
