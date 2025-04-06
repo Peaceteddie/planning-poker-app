@@ -12,11 +12,7 @@ wss.on('connection', (ws: WebSocket) => {
 
   ws.on('close', () => {
     console.log('WebSocket connection closed');
-    const user = clients.get(ws);
-    if (user) {
-      broadcastMessage({ type: 'removeUser', user });
-    }
-    clients.delete(ws);
+    handleRemoveUser(ws);
   });
 });
 
@@ -32,12 +28,16 @@ function handleMessage(ws: WebSocket, message: string) {
       handleCastVote(msg.user!);
       break;
 
-    case 'removeUser':
-      handleRemoveUser(ws);
+    case 'hideVotes':
+      handleHideVotes();
       break;
 
     case 'resetVotes':
       handleResetVotes(msg.users!);
+      break;
+
+    case 'revealVotes':
+      handleRevealVotes();
       break;
 
     default:
@@ -56,6 +56,10 @@ function handleCastVote(user: User) {
   broadcastMessage({ type: 'castVote', user });
 }
 
+function handleHideVotes() {
+  broadcastMessage({ type: 'hideVotes' });
+}
+
 function handleRemoveUser(ws: WebSocket) {
   clients.delete(ws);
   broadcastMessage({ type: 'updateUsers', users: Array.from(clients.values()) });
@@ -63,6 +67,10 @@ function handleRemoveUser(ws: WebSocket) {
 
 function handleResetVotes(users: User[]) {
   broadcastMessage({ type: 'updateUsers', users });
+}
+
+function handleRevealVotes() {
+  broadcastMessage({ type: 'revealVotes' });
 }
 
 function broadcastMessage(message: Message) {

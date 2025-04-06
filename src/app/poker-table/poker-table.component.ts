@@ -17,7 +17,6 @@ export class PokerTableComponent implements OnInit {
   readonly fibonacciSequence = [0, 1, 2, 3, 5, 8, 13, 20];
   readonly lightnessValues = this.fibonacciSequence.map((_, i) => 150 - (i * 15));
 
-  isHost: boolean = false;
   isVotesRevealed: boolean = false;
 
   user!: User;
@@ -35,35 +34,50 @@ export class PokerTableComponent implements OnInit {
   constructor(private socket: WebSocketService) { }
 
   ngOnInit() {
-    this.checkIsHost();
+    this.checkShouldBeHost();
 
     this.user = new User(this.socket.userId, this.userName);
     this.socket.addUser(this.user);
 
     this.socket.onNewVote.subscribe(this.updateUser);
+    this.socket.onRevealVotes.subscribe(this.revealVotes);
     this.socket.onUpdateUsers.subscribe(this.updateUsers);
+  }
+
+  calculateRoundedAverage(): number {
+    const votes = Array.from(this.votes.values()).map(user => user.vote!);
+    const sum = votes.reduce((acc, vote) => acc + vote, 0);
+    return Math.round(sum / votes.length);
   }
 
   castVote = (vote: number) => {
     this.socket.castVote({ ...this.user, vote });
   }
 
-  checkIsHost() {
+  checkShouldBeHost() {
     this.socket.onUpdateUsers
       .pipe(take(1))
       .subscribe(users => {
-        this.isHost = users.length === 1;
+        const noHost = !users.some(user => user.isHost);
+        const isFirstInLine = users[0]?.id === this.user.id;
+        this.user.isHost = noHost && isFirstInLine;
       });
   }
 
   resetVotes = () => {
-    this.users.forEach((user: User) => this.users.set(user.id, { ...user, vote: undefined }))
+    this.users.forEach((user: User) =>
+      this.users.set(user.id, { ...user, vote: undefined })
+    );
+
     this.socket.resetVotes(Array.from(this.users.values()));
   }
 
-  revealVotes = () => {
-    this.isVotesRevealed = true;
-    // this.socket.revealVotes(Array.from(this.users.values()));
+  revealVotes = (state: boolean) => {
+    this.isVotesRevealed = state;
+  }
+
+  sendRevealVotesRequest = () => {
+    this.socket.revealVotes();
   }
 
   updateUser = (user: User) => {
@@ -73,5 +87,9 @@ export class PokerTableComponent implements OnInit {
   updateUsers = (users: User[]) => {
     this.users.clear();
     users.forEach(user => this.users.set(user.id, user));
+
+    if (!this.user.isHost) {
+      this.checkShouldBeHost();
+    }
   }
 }

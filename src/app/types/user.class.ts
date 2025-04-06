@@ -1,5 +1,6 @@
 export class User {
     id: string;
+    isHost: boolean = false;
     name: string;
     vote?: number;
 

@@ -9,7 +9,10 @@ import { User } from '../types/user.class';
 })
 export class WebSocketService implements OnDestroy {
   userId: string;
+
   onNewVote: Subject<User> = new Subject<User>();
+  onRevealVotes: Subject<boolean> = new Subject<boolean>();
+  onUpdateUser: Subject<User> = new Subject<User>();
   onUpdateUsers: Subject<User[]> = new Subject<User[]>();
 
   private socket$: WebSocketSubject<Message>;
@@ -51,12 +54,20 @@ export class WebSocketService implements OnDestroy {
 
   private handleIncomingMessage = (message: any) => {
     switch (message.type) {
-      case 'updateUsers':
-        this.onUpdateUsers.next(message.users);
-        break;
-
       case 'castVote':
         this.onNewVote.next(message.user);
+        break;
+
+      case 'hideVotes':
+        this.onRevealVotes.next(false);
+        break;
+
+      case 'revealVotes':
+        this.onRevealVotes.next(true);
+        break;
+
+      case 'updateUsers':
+        this.onUpdateUsers.next(message.users);
         break;
 
       default:
@@ -66,8 +77,10 @@ export class WebSocketService implements OnDestroy {
 
   addUser = (user: User) => this.sendMessage({ type: 'addUser', user });
   castVote = (user: User) => this.sendMessage({ type: 'castVote', user });
+  hideVotes = () => this.sendMessage({ type: 'hideVotes' });
   removeUser = (user: User) => this.sendMessage({ type: 'removeUser', user });
-  resetVotes = (users: User[]) => this.sendMessage({ type: 'resetVotes', users });
+  resetVotes = (users: User[]) => { this.hideVotes(); this.sendMessage({ type: 'resetVotes', users }); };
+  revealVotes = () => this.sendMessage({ type: 'revealVotes' });
 
   getMessages = (): Observable<any> => this.socket$.asObservable();
   sendMessage = (message: any) => this.socket$?.next(message);
